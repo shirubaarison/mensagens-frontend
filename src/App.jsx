@@ -1,34 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from 'react'
+import DeliciasLogo from './assets/delicias.png'
+import 'bootstrap/dist/css/bootstrap.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import Mensagens from './components/Mensagens'
+import mensagensService from './services/mensagensService'
+
+const BigLogo = () => {
+  return (
+    <div className='mainLogo'>
+      <img src={DeliciasLogo}></img>
+      <div className='semicircle'>
+      </div>
+    </div>
+  )
+}
+
+const App = () => {
+  const [ mensagens, setMensagens ] = useState([])
+
+  useEffect(() => {
+    mensagensService.getAll().then(mensagens => setMensagens(mensagens) )
+  }, [])
+
+  const submitMensagem = async (men) => {
+    try {
+      const response = await mensagensService.enviarMensagem(men)
+      setMensagens(mensagens.concat(response))
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className='main'>
+      <BigLogo />
+      <h1>Bem vindo!!</h1>
+      <Mensagens mensagens={mensagens} submitMensagem={submitMensagem} />
+    </div>
   )
 }
 
