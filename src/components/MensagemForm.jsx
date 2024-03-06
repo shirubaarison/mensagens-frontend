@@ -12,12 +12,14 @@ const getRandomNumber = () => {
 const MensagemForm = ({ submitMensagem }) => {
     const [ mensagem, setMensagem ] = useState('')
     const [ nome, setNome ] = useState('')
-    
+    const [ showUsername, setShowUsername ] = useState(true)
+
     useEffect(() => {
       const usuarioJSON = window.localStorage.getItem('usuarioMensagensApp')
-      if (usuarioJSON) {
+      if (usuarioJSON) { 
         const usuario = JSON.parse(usuarioJSON)
         setNome(usuario)
+        setShowUsername(false)
       }
     }, [])
 
@@ -40,13 +42,12 @@ const MensagemForm = ({ submitMensagem }) => {
           )
 
             setMensagem('')
+            setShowUsername(false)
         }
     }
 
-    const showUsername = nome !== '' ? false : true
-
     return (
-    <div className='container p-2'>
+    <div className='container p-2 inputMensagem'>
       <form className="input-group mb-3" onSubmit={addMensagem}>
           <input type="text" className="form-control" placeholder="Mensagem" value={mensagem} onChange={({ target }) => setMensagem(target.value)}/>
           {showUsername && <input type="text" className="form-control" placeholder="Nome" value={nome} onChange={({ target }) => setNome(target.value)}/>}

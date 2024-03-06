@@ -14,4 +14,10 @@ const enviarMensagem = async (mensagemObj) => {
     return response.data
 }
 
-export default { getAll, enviarMensagem }
+const deletarMensagem = async (id) => {
+    const response = await axios.delete(`${baseUrl}/${id}`)
+
+    return response.data
+}
+
+export default { getAll, enviarMensagem, deletarMensagem }
