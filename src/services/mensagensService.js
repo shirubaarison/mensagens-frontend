@@ -20,4 +20,8 @@ const deletarMensagem = async (id) => {
     return response.data
 }
 
-export default { getAll, enviarMensagem, deletarMensagem }
+const deletarTudo = async () => {
+    await axios.post(`${baseUrl}/reset`)
+}
+
+export default { getAll, enviarMensagem, deletarMensagem, deletarTudo }
