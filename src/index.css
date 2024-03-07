@@ -1,3 +1,8 @@
+::selection {
+    background-color: #DB4BA4;
+    color: white;
+}
+
 .mainLogo {
     background-color: #DB4BA4;
     display: flex;
@@ -34,7 +39,7 @@ body {
     overflow-x: auto;
     display: flex;
     flex-direction: column-reverse;
-    border: 1px solid #00000088;
+    border: 1px solid rgb(0, 0, 0, 0.2);
     border-radius: 16px;
 }
 
@@ -48,11 +53,12 @@ body {
 }
 
 .suaMensagem {
-    background-color: #F6F5AE;
+    background-color: #291804;
+    color: white
 }
 
 .mensageDosOto {
-    background-color: #3E517A;
+    background-color: #002366;
     color: white;
 }
 
@@ -61,7 +67,31 @@ body {
 }
 
 .inputMensagem {
-    border: 1px solid #00000088;
+    border: 1px solid rgb(0, 0, 0, 0.2);
     border-radius: 16px;
     margin-top: 10px;
+}
+
+#button-addon2 {
+    width: 50px;
+    height: 50px;
+    border-radius: 50% !important;
+}
+
+.form-control {
+    border-radius: 8px !important;
+}
+
+button:has(#send-icon) {
+    margin-left: 1rem;
+    &:hover {
+        background-color: #eee;
+    }
+    &:active {
+        filter: brightness(0.9);
+    }
+}
+
+#send-icon {
+    width: 100%;
 }
