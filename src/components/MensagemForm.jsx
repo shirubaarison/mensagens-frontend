@@ -1,64 +1,64 @@
-import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
 
-const getRandomNumber = () => {
-  const magicNum = 10339
-  const num = Math.floor(Math.random() * magicNum)
-
-  return num
-}
-
-
-const MensagemForm = ({ submitMensagem }) => {
+const MensagemForm = ({ submitMensagem, usuario, setUsuario }) => {
     const [ mensagem, setMensagem ] = useState('')
-    const [ nome, setNome ] = useState('')
+    const [ username, setUsername ] = useState(usuario)
     const [ showUsername, setShowUsername ] = useState(true)
 
     useEffect(() => {
-      const usuarioJSON = window.localStorage.getItem('usuarioMensagensApp')
-      if (usuarioJSON) { 
-        const usuario = JSON.parse(usuarioJSON)
-        setNome(usuario)
+      if (usuario) {
         setShowUsername(false)
+        setUsername(usuario)
       }
-    }, [])
+      else setShowUsername(true)
+    }, [usuario])
 
     const addMensagem = (event) => {
         event.preventDefault()
-        
-        let randomUser = `anonymous${getRandomNumber()}`
-        if (nome === '') {
-          setNome(randomUser)
-        }
 
-        if (mensagem !== '') {
+        if (mensagem !== '' || username !== '') {
             submitMensagem({
                 mensagem: mensagem,
-                autor: nome !== '' ? nome : randomUser
+                autor: username
             })
             
             window.localStorage.setItem(
-              'usuarioMensagensApp', JSON.stringify(nome)
-          )
-
+              'usuarioMensagensApp', JSON.stringify(usuario)
+            )
+            
             setMensagem('')
             setShowUsername(false)
+            setUsuario(username)
         }
     }
 
     return (
     <div className='container p-2 inputMensagem'>
       <form className="input-group mb-3" onSubmit={addMensagem}>
-          <input type="text" className="form-control" placeholder="Mensagem" value={mensagem} onChange={({ target }) => setMensagem(target.value)}/>
-          {showUsername && <input type="text" className="form-control" placeholder="Nome" value={nome} onChange={({ target }) => setNome(target.value)}/>}
-          <button className="btn btn-outline-secondary" type="submit" id="button-addon2">Enviar</button>
+      {!showUsername && 
+        <>    
+          <input type="text" autoFocus className="form-control" placeholder="Mensagem" value={mensagem} onChange={({ target }) => setMensagem(target.value)}/>       
+            <button className="btn btn-outline-secondary" type="submit" id="button-addon2">
+              <img src="https://static.thenounproject.com/png/1268238-200.png" alt="Send" id="send-icon"/>
+            </button>
+        </>}
+      {showUsername && 
+        <>
+          <input type="text" autoFocus className="form-control" placeholder="Nome" value={username} onChange={({ target }) => setUsername(target.value)}/>
+          <button className="btn btn-outline-secondary" type="submit" id="button-addon2">
+              <img src="https://static.thenounproject.com/png/1268238-200.png" alt="Send" id="send-icon"/>
+            </button>
+        </>}
       </form>
     </div>
     )
 }
 
 MensagemForm.propTypes = {
-    submitMensagem: PropTypes.func.isRequired
+    submitMensagem: PropTypes.func.isRequired,
+    usuario: PropTypes.string,
+    setUsuario: PropTypes.func.isRequired
 }
 
 export default MensagemForm

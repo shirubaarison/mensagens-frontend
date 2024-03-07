@@ -1,13 +1,6 @@
 import PropTypes from 'prop-types'
-import MensagemForm from './MensagemForm'
 
-const Mensagem = ({ mensagem, autor, deleteMensagem}) => {
-  
-  const usuarioJSON = window.localStorage.getItem('usuarioMensagensApp')
-  let usuario
-  if (usuarioJSON) {
-    usuario = JSON.parse(usuarioJSON)
-  }
+const Mensagem = ({ mensagem, autor, deleteMensagem, usuario }) => {
   
   const showDeleteButton = usuario === autor ? true : false
 
@@ -34,22 +27,21 @@ const Mensagem = ({ mensagem, autor, deleteMensagem}) => {
     )
 }
 
-const Mensagens = ({ mensagens, submitMensagem, deleteMensagem }) => {
+const Mensagens = ({ mensagens, deleteMensagem, usuario }) => {
   return (
     <>
     <h1>Chat</h1>
-    <div className="container chat">
+    <div className='container chat'>
       <div className="row justify-content-center">
         <div className="col md-6">
           <div className="chat-container rounded p-3">
               {mensagens.map(mensagem => 
-              <Mensagem key={mensagem.id} mensagem={mensagem.mensagem} autor={mensagem.autor} deleteMensagem={() => deleteMensagem(mensagem.id)} />
+              <Mensagem key={mensagem.id} mensagem={mensagem.mensagem} autor={mensagem.autor} deleteMensagem={() => deleteMensagem(mensagem.id)} usuario={usuario} />
             )}
           </div>
         </div>
       </div>
     </div>
-    <MensagemForm submitMensagem={submitMensagem}/>
     </>
   )
 }
@@ -57,13 +49,14 @@ const Mensagens = ({ mensagens, submitMensagem, deleteMensagem }) => {
 Mensagem.propTypes = {
   mensagem: PropTypes.string.isRequired,
   autor: PropTypes.string.isRequired,
-  deleteMensagem: PropTypes.func.isRequired
+  deleteMensagem: PropTypes.func.isRequired,
+  usuario: PropTypes.string
 }
 
 Mensagens.propTypes = {
   mensagens: PropTypes.array.isRequired,
-  submitMensagem: PropTypes.func.isRequired,
-  deleteMensagem: PropTypes.func.isRequired
+  deleteMensagem: PropTypes.func.isRequired,
+  usuario: PropTypes.string
 }
 
 export default Mensagens
