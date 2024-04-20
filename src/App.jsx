@@ -1,42 +1,65 @@
 import { useState, useEffect, useRef } from 'react'
+import { jwtDecode } from "jwt-decode"
 import 'bootstrap/dist/css/bootstrap.css'
 
-import Mensagens from './components/Mensagens'
-import MensagemForm from './components/MensagemForm'
 import mensagensService from './services/mensagensService'
-import LoginForm from './components/LoginForm'
 import loginService from './services/loginService'
-import RegisterForm from './components/RegisterForm'
+import SignForm from './components/SignForm'
+import Chat from './components/Chat'
 
-import {
-  BrowserRouter as Router,
-  Routes, Route, Link
-} from 'react-router-dom'
-
-// import Menu from './components/Menu'
+import Notification from './components/Notification'
 
 const App = () => {
   const [ mensagens, setMensagens ] = useState([])
   const [ user, setUser ] = useState(null)
 
+  const [notification, setNotification] = useState(null)
+
+  const notificar = (mensagem) => {
+    setNotification(mensagem)
+  
+    setTimeout(() => {
+        setNotification(null)
+    }, 5000)
+  } 
+
+  const isTokenExpired = token => {
+    if (!token) return true
+    try {
+      const decoded = jwtDecode(token)
+      return decoded.exp < Date.now() / 1000
+    } catch (error) {
+      return true
+    }
+  }
+
   const ws = useRef(null)
 
+  // Verificar se o usuário já existe
   useEffect(() => {
     const usuarioJSON = window.localStorage.getItem('usuarioMensagensApp')
     if (usuarioJSON) {
       const usuario = JSON.parse(usuarioJSON)
       setUser(usuario)
       mensagensService.setToken(usuario.token)
+
+      const isExpired = isTokenExpired(usuario.token)
+      if (isExpired) {
+        window.localStorage.clear()
+        setUser(null)
+
+        notificar('token expirado, entre dnv')
+      }
     }
   }, [])
 
+  // Pegar mensagens e criar a conexão websocket
   useEffect(() => {
     mensagensService.getAll().then(mensagens => setMensagens(mensagens));
     
-    // quando buildar use esse endereço de websocket
-    ws.current = new WebSocket('wss://mensagens.onrender.com')
-
-    // ws.current = new WebSocket('ws://localhost:3002')
+    // ws.current = new WebSocket('wss://mensagens.onrender.com') // para render.com build
+    ws.current = new WebSocket('ws://localhost:3002')
+    
     ws.current.onopen = () => console.log("ws conexao estabelecida")
     ws.current.onclose = () => console.log('ws fechado')
     
@@ -46,12 +69,14 @@ const App = () => {
     }
   }, [])
 
+  // Receber mensagens do websocket
   useEffect(() => {
     if (!ws.current) return
   
     ws.current.onmessage = (event) => {
       const message = JSON.parse(event.data)
       const tempId = Date.now().toString()
+      // obs: gambiarra (id)
       const newMessage = {
         ...message, 
         id: tempId,
@@ -60,8 +85,6 @@ const App = () => {
           username: message.username,
         }
       }
-
-      // ver se o newMessage causa o bug, acho que nao (precisa de ID)
       setMensagens((prevMensagens) => [...prevMensagens, newMessage])
     }
   }, [])
@@ -76,21 +99,22 @@ const App = () => {
 
         mensagensService.setToken(user.token)
         setUser(user)
+
+        notificar('sucesso')
+
     } catch (exception) {
-        console.error(exception)
+      notificar('errou a senha e/ou nome')
     }
   }
 
-  const handleRegister = async (loginObj) => {
+  const handleSign = async (regObj) => {
     try {
-        await loginService.register(loginObj)
-
-
+        await loginService.register(regObj)
+        handleLogin(regObj)
     } catch (exception) {
-        console.error(exception)
+      handleLogin(regObj)
     }
   }
-
 
   const submitMensagem = async (men) => {
     try {
@@ -118,44 +142,32 @@ const App = () => {
   const deleteMensagem = async (id) => {
     try {
       await mensagensService.deletarMensagem(id)
-      
+
       setMensagens(mensagens.filter(m => m.id !== id))
     } catch (error) {
       console.log(error)
     }
   }
-  const padding = {
-    padding: 5
-  }
 
-  const Chat = () => {
-    return (
-    <div className='main'>
-        <div className='container'>
-          <Mensagens mensagens={mensagens} deleteMensagem={deleteMensagem} usuario={user} />
-          <MensagemForm submitMensagem={submitMensagem}/>
-        </div>
-      </div>
-    )
+  const logout = () => {
+    window.localStorage.clear()
+    setUser(null)
+
+    notificar('sucesso')
   }
 
   if (user) {
     return (
-    <Chat />
+    <>
+      <Notification notification={notification} />
+      <Chat mensagens={mensagens} deleteMensagem={deleteMensagem} user={user} submitMensagem={submitMensagem} logout={logout}/>
+    </>
   )
   } else {
     return(
       <div className='bemvindo'>
-      <Router>
-          <div>
-            <Link style={padding} to="/register">cadastrar</Link>
-            <Link style={padding} to="/login">entrar</Link>
-          </div>
-          <Routes>
-            <Route path="/login" element={<LoginForm handleLogin={handleLogin} />} />
-            <Route path="/register" element={<RegisterForm handleRegister={handleRegister} />} />
-          </Routes>
-        </Router>
+          <Notification notification={notification} />
+          <SignForm handleSign={handleSign} />
       </div>
     )
   }
