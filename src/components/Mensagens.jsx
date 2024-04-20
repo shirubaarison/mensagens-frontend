@@ -8,7 +8,7 @@ const Mensagem = ({ mensagem, deleteMensagem, autor, usuario }) => {
     <>
         {!showDeleteButton &&
           <div className='m-2 d-flex justify-content-start'> 
-        <span className='mensageDosOto'><strong>{autor.username}</strong>:{mensagem}</span></div>
+        <span className='mensageDosOto'><strong>{autor.username}</strong>: {mensagem}</span></div>
         }
         {showDeleteButton &&
         <>
@@ -28,7 +28,6 @@ const Mensagem = ({ mensagem, deleteMensagem, autor, usuario }) => {
 }
 
 const Mensagens = ({ mensagens, deleteMensagem, usuario }) => {
-  console.log(mensagens)
   return (
     <>
     <h1>Chat</h1>
@@ -50,11 +49,14 @@ const Mensagens = ({ mensagens, deleteMensagem, usuario }) => {
 Mensagem.propTypes = {
   mensagem: PropTypes.string.isRequired,
   deleteMensagem: PropTypes.func.isRequired,
+  autor: PropTypes.object,
+  usuario: PropTypes.object
 }
 
 Mensagens.propTypes = {
   mensagens: PropTypes.array.isRequired,
   deleteMensagem: PropTypes.func.isRequired,
+  usuario: PropTypes.object
 }
 
 export default Mensagens

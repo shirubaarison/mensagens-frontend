@@ -6,6 +6,12 @@ import MensagemForm from './components/MensagemForm'
 import mensagensService from './services/mensagensService'
 import LoginForm from './components/LoginForm'
 import loginService from './services/loginService'
+import RegisterForm from './components/RegisterForm'
+
+import {
+  BrowserRouter as Router,
+  Routes, Route, Link
+} from 'react-router-dom'
 
 // import Menu from './components/Menu'
 
@@ -28,9 +34,9 @@ const App = () => {
     mensagensService.getAll().then(mensagens => setMensagens(mensagens));
     
     // quando buildar use esse endereço de websocket
-    // ws.current = new WebSocket('wss://mensagens.onrender.com')
+    ws.current = new WebSocket('wss://mensagens.onrender.com')
 
-    ws.current = new WebSocket('ws://localhost:3002')
+    // ws.current = new WebSocket('ws://localhost:3002')
     ws.current.onopen = () => console.log("ws conexao estabelecida")
     ws.current.onclose = () => console.log('ws fechado')
     
@@ -50,12 +56,11 @@ const App = () => {
         ...message, 
         id: tempId,
         user: {
-          id: user.id,
+          id: tempId,
           username: message.username,
         }
       }
 
-      console.log('received', newMessage)
       // ver se o newMessage causa o bug, acho que nao (precisa de ID)
       setMensagens((prevMensagens) => [...prevMensagens, newMessage])
     }
@@ -74,7 +79,18 @@ const App = () => {
     } catch (exception) {
         console.error(exception)
     }
-}
+  }
+
+  const handleRegister = async (loginObj) => {
+    try {
+        await loginService.register(loginObj)
+
+
+    } catch (exception) {
+        console.error(exception)
+    }
+  }
+
 
   const submitMensagem = async (men) => {
     try {
@@ -108,18 +124,39 @@ const App = () => {
       console.log(error)
     }
   }
+  const padding = {
+    padding: 5
+  }
 
-  if(user) {
+  const Chat = () => {
     return (
-      <div className='main'>
+    <div className='main'>
         <div className='container'>
           <Mensagens mensagens={mensagens} deleteMensagem={deleteMensagem} usuario={user} />
           <MensagemForm submitMensagem={submitMensagem}/>
         </div>
       </div>
-  )} else {
+    )
+  }
+
+  if (user) {
+    return (
+    <Chat />
+  )
+  } else {
     return(
-      <LoginForm handleLogin={handleLogin}/>
+      <div className='bemvindo'>
+      <Router>
+          <div>
+            <Link style={padding} to="/register">cadastrar</Link>
+            <Link style={padding} to="/login">entrar</Link>
+          </div>
+          <Routes>
+            <Route path="/login" element={<LoginForm handleLogin={handleLogin} />} />
+            <Route path="/register" element={<RegisterForm handleRegister={handleRegister} />} />
+          </Routes>
+        </Router>
+      </div>
     )
   }
 }

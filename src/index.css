@@ -75,6 +75,19 @@ button:has(#send-icon) {
 
 .loginForm {
     background-color: white;
+    border: 1px solid red;
+    padding: 20% 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.bemvindo {   
+    background-color: white;
     padding: 20% 0;
     height: 100vh;
     display: flex;
