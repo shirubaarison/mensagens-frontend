@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types'
 
-const Mensagem = ({ mensagem, autor, deleteMensagem, usuario }) => {
-  
-  const showDeleteButton = usuario === autor ? true : false
+const Mensagem = ({ mensagem, deleteMensagem, autor, usuario }) => {
+
+  const showDeleteButton = usuario.username === autor.username ? true : false
 
   return (  
     <>
-        {!showDeleteButton && 
+        {!showDeleteButton &&
           <div className='m-2 d-flex justify-content-start'> 
-        <span className='mensageDosOto'><strong>{autor}</strong>: {mensagem}</span></div>
+        <span className='mensageDosOto'><strong>{autor.username}</strong>:{mensagem}</span></div>
         }
-        {showDeleteButton && 
+        {showDeleteButton &&
         <>
           <div className='m-2 d-flex justify-content-end align-items-center gap-2'> 
             <span className='suaMensagem'>{mensagem}</span>
@@ -28,6 +28,7 @@ const Mensagem = ({ mensagem, autor, deleteMensagem, usuario }) => {
 }
 
 const Mensagens = ({ mensagens, deleteMensagem, usuario }) => {
+  console.log(mensagens)
   return (
     <>
     <h1>Chat</h1>
@@ -36,7 +37,7 @@ const Mensagens = ({ mensagens, deleteMensagem, usuario }) => {
         <div className="col md-6">
           <div className="chat-container rounded p-3">
               {mensagens.map(mensagem => 
-              <Mensagem key={mensagem.id} mensagem={mensagem.mensagem} autor={mensagem.autor} deleteMensagem={() => deleteMensagem(mensagem.id)} usuario={usuario} />
+              <Mensagem key={mensagem.id} mensagem={mensagem.mensagem} autor={mensagem.user} usuario={usuario} deleteMensagem={() => deleteMensagem(mensagem.id)} />
             )}
           </div>
         </div>
@@ -48,15 +49,12 @@ const Mensagens = ({ mensagens, deleteMensagem, usuario }) => {
 
 Mensagem.propTypes = {
   mensagem: PropTypes.string.isRequired,
-  autor: PropTypes.string.isRequired,
   deleteMensagem: PropTypes.func.isRequired,
-  usuario: PropTypes.string
 }
 
 Mensagens.propTypes = {
   mensagens: PropTypes.array.isRequired,
   deleteMensagem: PropTypes.func.isRequired,
-  usuario: PropTypes.string
 }
 
 export default Mensagens

@@ -1,36 +1,26 @@
 import { useState, useEffect, useRef } from 'react'
-import DeliciasLogo from './assets/delicias.png'
 import 'bootstrap/dist/css/bootstrap.css'
 
 import Mensagens from './components/Mensagens'
 import MensagemForm from './components/MensagemForm'
 import mensagensService from './services/mensagensService'
+import LoginForm from './components/LoginForm'
+import loginService from './services/loginService'
 
-import Menu from './components/Menu'
-
-// TODO: melhorar essa merda
-const BigLogo = () => {
-  return (
-    <div className='mainLogo'>
-      <img src={DeliciasLogo}></img>
-      <div className='semicircle'>
-      </div>
-    </div>
-  )
-}
+// import Menu from './components/Menu'
 
 const App = () => {
   const [ mensagens, setMensagens ] = useState([])
-  const [ user, setUser ] = useState('')
+  const [ user, setUser ] = useState(null)
 
   const ws = useRef(null)
 
   useEffect(() => {
     const usuarioJSON = window.localStorage.getItem('usuarioMensagensApp')
-    let usuario
     if (usuarioJSON) {
-      usuario = JSON.parse(usuarioJSON)
+      const usuario = JSON.parse(usuarioJSON)
       setUser(usuario)
+      mensagensService.setToken(usuario.token)
     }
   }, [])
 
@@ -41,13 +31,10 @@ const App = () => {
     // ws.current = new WebSocket('wss://mensagens.onrender.com')
 
     ws.current = new WebSocket('ws://localhost:3002')
-
     ws.current.onopen = () => console.log("ws conexao estabelecida")
-  
     ws.current.onclose = () => console.log('ws fechado')
-
+    
     const wsCurrent = ws.current
-  
     return () => {
       wsCurrent.close()
     }
@@ -59,26 +46,54 @@ const App = () => {
     ws.current.onmessage = (event) => {
       const message = JSON.parse(event.data)
       const tempId = Date.now().toString()
-      const newMessage = {...message, id: tempId}
+      const newMessage = {
+        ...message, 
+        id: tempId,
+        user: {
+          id: user.id,
+          username: message.username,
+        }
+      }
 
+      console.log('received', newMessage)
       // ver se o newMessage causa o bug, acho que nao (precisa de ID)
       setMensagens((prevMensagens) => [...prevMensagens, newMessage])
     }
   }, [])
 
-  const submitMensagem = async (men) => {
-    const menString = JSON.stringify(men)
-    const parsedString = JSON.parse(menString)
-    if (parsedString.mensagem === '') return
-
+  const handleLogin = async (loginObj) => {
     try {
+        const user = await loginService.login(loginObj)
+
+        window.localStorage.setItem(
+            'usuarioMensagensApp', JSON.stringify(user)
+        )
+
+        mensagensService.setToken(user.token)
+        setUser(user)
+    } catch (exception) {
+        console.error(exception)
+    }
+}
+
+  const submitMensagem = async (men) => {
+    try {
+      const menString = JSON.stringify(men)
+      const parsedString = JSON.parse(menString)
+
+      if (parsedString.mensagem === '') return
+
       if (ws.current && menString.trim() !== '') {
-        ws.current.send(menString)
+        const sendPkg = JSON.stringify({
+          mensagem: men.mensagem,
+          username: user.username
+        })
+        ws.current.send(sendPkg)
       }
 
       const response = await mensagensService.enviarMensagem(men)
       setMensagens(mensagens.concat(response))
-      
+
     } catch (error) {
       console.log(error)
     }
@@ -94,33 +109,19 @@ const App = () => {
     }
   }
 
-  const deletarUsername = () => {
-    window.localStorage.clear()
-    setUser(null)
-  }
-
-  // buggy code
-  const deletarTudo = async () => {
-    try {
-      // ele tira o autor ai precisa refazer o nome dnv (?)
-      await mensagensService.deletarTudo() 
-      setMensagens([]) 
-      setUser('') // lol, assim funciona pois é obrigatorio digitar dnv 
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  return (
-    <div className='main'>
-      <BigLogo /> 
-      <div className='container'>
-        <Mensagens mensagens={mensagens} deleteMensagem={deleteMensagem} usuario={user} />
-        <MensagemForm submitMensagem={submitMensagem} usuario={user} setUsuario={setUser}/>
-        <Menu deletarUsername={deletarUsername} usuario={user} deletarTudo={deletarTudo}/>
+  if(user) {
+    return (
+      <div className='main'>
+        <div className='container'>
+          <Mensagens mensagens={mensagens} deleteMensagem={deleteMensagem} usuario={user} />
+          <MensagemForm submitMensagem={submitMensagem}/>
+        </div>
       </div>
-    </div>
-  )
+  )} else {
+    return(
+      <LoginForm handleLogin={handleLogin}/>
+    )
+  }
 }
 
 export default App

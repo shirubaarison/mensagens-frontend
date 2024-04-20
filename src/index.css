@@ -3,29 +3,6 @@
     color: white;
 }
 
-.mainLogo {
-    background-color: #DB4BA4;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 0;
-    display: none;
-}
-.mainLogo .semicircle {
-    height: 50vh;
-    background-color: white;
-    border-top-left-radius: 50%;
-    border-top-right-radius: 50%;
-    border-bottom: 0;
-}
-
-.mainLogo img {
-    max-height: 50vh;
-    border-radius: 50%;
-    transform: translate(0, 25vh);
-}
-
 body {
     background: url(assets/delicias.png);
     background-repeat: no-repeat;
@@ -94,4 +71,16 @@ button:has(#send-icon) {
 
 #send-icon {
     width: 100%;
+}
+
+.loginForm {
+    background-color: white;
+    padding: 20% 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: center;
+    justify-content: center;
+    gap: 10px;
 }
