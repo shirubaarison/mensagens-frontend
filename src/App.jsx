@@ -57,8 +57,8 @@ const App = () => {
   useEffect(() => {
     mensagensService.getAll().then(mensagens => setMensagens(mensagens));
     
-    // ws.current = new WebSocket('wss://mensagens.onrender.com') // para render.com build
-    ws.current = new WebSocket('ws://localhost:3002')
+    ws.current = new WebSocket('wss://mensagens.onrender.com') // para render.com build
+    // ws.current = new WebSocket('ws://localhost:3002')
     
     ws.current.onopen = () => console.log("ws conexao estabelecida")
     ws.current.onclose = () => console.log('ws fechado')
@@ -135,7 +135,7 @@ const App = () => {
       setMensagens(mensagens.concat(response))
 
     } catch (error) {
-      console.log(error)
+      notificar("deu algum erro ai pai " + error.message)
     }
   }
 
@@ -145,7 +145,7 @@ const App = () => {
 
       setMensagens(mensagens.filter(m => m.id !== id))
     } catch (error) {
-      console.log(error)
+      notificar("deu algum erro ai pai " + error.message)
     }
   }
 
@@ -158,10 +158,10 @@ const App = () => {
 
   if (user) {
     return (
-    <>
+    <div className='main'>
       <Notification notification={notification} />
       <Chat mensagens={mensagens} deleteMensagem={deleteMensagem} user={user} submitMensagem={submitMensagem} logout={logout}/>
-    </>
+    </div>
   )
   } else {
     return(

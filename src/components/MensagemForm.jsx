@@ -15,7 +15,7 @@ const MensagemForm = ({ submitMensagem }) => {
         }
 
     return (
-    <div className='container p-2 inputMensagem'>
+    <div className='inputMensagem'>
       <form className="input-group mb-3" onSubmit={addMensagem}>   
           <input type="text" autoFocus className="form-control" placeholder="Mensagem" value={mensagem} onChange={({ target }) => setMensagem(target.value)}/>       
             <button className="btn btn-outline-secondary" type="submit" id="button-addon2">

@@ -8,9 +8,9 @@ const Chat = ({ mensagens, deleteMensagem, user, submitMensagem, logout }) => {
     return (
     <div className='main'>
         <div className='container'>
+          <Menu logout={logout} />
           <Mensagens mensagens={mensagens} deleteMensagem={deleteMensagem} usuario={user} />
           <MensagemForm submitMensagem={submitMensagem}/>
-          <Menu logout={logout} />
         </div>
       </div>
     )

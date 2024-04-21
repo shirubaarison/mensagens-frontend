@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 
 const Menu = ({ logout }) => {        
-    const divClass = `container gap-2 d-flex justify-content-center p-2 mt-2`
+    const divClass = `container d-flex justify-content-end mb-2`
 
     return (
         <div className={divClass}>

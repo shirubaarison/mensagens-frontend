@@ -30,7 +30,6 @@ const Mensagem = ({ mensagem, deleteMensagem, autor, usuario }) => {
 const Mensagens = ({ mensagens, deleteMensagem, usuario }) => {
   return (
     <>
-    <h1>Chat</h1>
     <div className='container chat'>
       <div className="row justify-content-center">
         <div className="col md-6">
