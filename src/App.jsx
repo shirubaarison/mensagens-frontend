@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { jwtDecode } from "jwt-decode"
 import 'bootstrap/dist/css/bootstrap.css'
 
@@ -8,11 +8,22 @@ import SignForm from './components/SignForm'
 import Chat from './components/Chat'
 
 import Notification from './components/Notification'
+import { useDispatch } from 'react-redux'
+import { inicializarMensagens } from './reducers/mensagemReducer'
 
 const App = () => {
-  const [ mensagens, setMensagens ] = useState([])
-  const [ user, setUser ] = useState(null)
+  const dispatch = useDispatch()
 
+  useEffect(() => {
+    dispatch(inicializarMensagens())
+  }, [dispatch])
+
+  
+  useEffect(() => {
+    dispatch({ type: 'socket/connect' })
+  }, [dispatch])
+
+  const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
 
   const notificar = (mensagem) => {
@@ -33,7 +44,6 @@ const App = () => {
     }
   }
 
-  const ws = useRef(null)
 
   // Verificar se o usuário já existe
   useEffect(() => {
@@ -47,47 +57,11 @@ const App = () => {
       if (isExpired) {
         window.localStorage.clear()
         setUser(null)
-
         notificar('token expirado, entre dnv')
       }
     }
   }, [])
 
-  // Pegar mensagens e criar a conexão websocket
-  useEffect(() => {
-    mensagensService.getAll().then(mensagens => setMensagens(mensagens));
-    
-    ws.current = new WebSocket('wss://mensagens.onrender.com') // para render.com build
-    // ws.current = new WebSocket('ws://localhost:3002')
-    
-    ws.current.onopen = () => console.log("ws conexao estabelecida")
-    ws.current.onclose = () => console.log('ws fechado')
-    
-    const wsCurrent = ws.current
-    return () => {
-      wsCurrent.close()
-    }
-  }, [])
-
-  // Receber mensagens do websocket
-  useEffect(() => {
-    if (!ws.current) return
-  
-    ws.current.onmessage = (event) => {
-      const message = JSON.parse(event.data)
-      const tempId = Date.now().toString()
-      // obs: gambiarra (id)
-      const newMessage = {
-        ...message, 
-        id: tempId,
-        user: {
-          id: tempId,
-          username: message.username,
-        }
-      }
-      setMensagens((prevMensagens) => [...prevMensagens, newMessage])
-    }
-  }, [])
 
   const handleLogin = async (loginObj) => {
     try {
@@ -116,39 +90,6 @@ const App = () => {
     }
   }
 
-  const submitMensagem = async (men) => {
-    try {
-      const menString = JSON.stringify(men)
-      const parsedString = JSON.parse(menString)
-
-      if (parsedString.mensagem === '') return
-
-      if (ws.current && menString.trim() !== '') {
-        const sendPkg = JSON.stringify({
-          mensagem: men.mensagem,
-          username: user.username
-        })
-        ws.current.send(sendPkg)
-      }
-
-      const response = await mensagensService.enviarMensagem(men)
-      setMensagens(mensagens.concat(response))
-
-    } catch (error) {
-      notificar("deu algum erro ai pai " + error.message)
-    }
-  }
-
-  const deleteMensagem = async (id) => {
-    try {
-      await mensagensService.deletarMensagem(id)
-
-      setMensagens(mensagens.filter(m => m.id !== id))
-    } catch (error) {
-      notificar("deu algum erro ai pai " + error.message)
-    }
-  }
-
   const logout = () => {
     window.localStorage.clear()
     setUser(null)
@@ -160,7 +101,7 @@ const App = () => {
     return (
     <div className='main'>
       <Notification notification={notification} />
-      <Chat mensagens={mensagens} deleteMensagem={deleteMensagem} user={user} submitMensagem={submitMensagem} logout={logout}/>
+      <Chat user={user} logout={logout}/>
     </div>
   )
   } else {

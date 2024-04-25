@@ -14,12 +14,12 @@ const getAll = async () => {
     return response.data
 }
 
-const enviarMensagem = async (mensagemObj) => {
+const enviarMensagem = async (texto) => {
     const config = {
         headers: { Authorization: token },
     }
 
-    const response = await axios.post(baseUrl, mensagemObj, config)
+    const response = await axios.post(baseUrl, texto, config)
 
     return response.data
 }
