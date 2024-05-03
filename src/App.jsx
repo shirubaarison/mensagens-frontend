@@ -21,15 +21,12 @@ const App = () => {
 
     return (
       <>
-        <div className='bemvindo'>
-            <Notification />
-            <Routes>
-              <Route path='/' element={<Chat />} />
-              <Route path='/login' element={<LoginForm />} />
-              <Route path='/register' element={<SignForm />} />
-            </Routes>
-
-        </div>
+        <Notification />
+        <Routes>
+          <Route path='/' element={<Chat />} />
+          <Route path='/login' element={<LoginForm />} />
+          <Route path='/register' element={<SignForm />} />
+        </Routes>
       </>
     )
 }

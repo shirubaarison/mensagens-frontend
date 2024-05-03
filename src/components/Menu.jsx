@@ -8,12 +8,10 @@ const Menu = () => {
         dispatch(logout())
     }
 
-    const divClass = `container d-flex justify-content-end mb-2`
-
     return (
         <div>
             {user && 
-                <div className={divClass}>
+                <div className='container d-flex justify-content-end mb-2 mt-4'>
                     <button className='btn btn-secondary btn-sm' onClick={adeus}>log out</button>
                 </div>
             }

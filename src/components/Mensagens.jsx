@@ -38,24 +38,25 @@ const Mensagem = ({ id, mensagem, autor, usuario }) => {
 const Mensagens = ({ usuario }) => {
   const mensagens = useSelector(getMensagens)
   
-  const chatRef = useRef(null)
+  const endRef = useRef(null)
 
   useEffect(() => {
     const scrollToBottom = () => {
-      chatRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      endRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
     }
 
     scrollToBottom()
   }, [mensagens])
 
   return (
-    <>
-      <div className="md-6 rounded p-3 chat justify-content-center" ref={chatRef}>
+    <div className='container'>
+      <div className="md-6 rounded p-3 chat justify-content-center">
           {mensagens.map(mensagem => 
             <Mensagem key={mensagem.id} id={mensagem.id} mensagem={mensagem.mensagem} autor={mensagem.user} usuario={usuario} />
           )}
+          <div ref={endRef} />
       </div>
-    </>
+    </div>
   )
 }
 
