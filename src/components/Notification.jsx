@@ -1,6 +1,9 @@
-import PropTypes from 'prop-types'
+import { useSelector } from 'react-redux'
+import { getNotification } from '../reducers/notificationReducer'
 
-const Notification = ( { notification }) => {
+const Notification = () => {
+    const notification = useSelector(getNotification)
+    
     if (!notification) return null
 
     return (
@@ -8,10 +11,6 @@ const Notification = ( { notification }) => {
             {notification}
         </div>
     )
-}
-
-Notification.propTypes = {
-    notification: PropTypes.string
 }
 
 export default Notification

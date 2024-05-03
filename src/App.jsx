@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { jwtDecode } from "jwt-decode"
+import { jwtDecode } from 'jwt-decode'
 import 'bootstrap/dist/css/bootstrap.css'
 
 import mensagensService from './services/mensagensService'
@@ -10,29 +10,16 @@ import Chat from './components/Chat'
 import Notification from './components/Notification'
 import { useDispatch } from 'react-redux'
 import { inicializarMensagens } from './reducers/mensagemReducer'
+import { enviarNotificacao } from './reducers/notificationReducer'
 
 const App = () => {
   const dispatch = useDispatch()
+  const [user, setUser] = useState(null)
 
   useEffect(() => {
     dispatch(inicializarMensagens())
-  }, [dispatch])
-
-  
-  useEffect(() => {
     dispatch({ type: 'socket/connect' })
   }, [dispatch])
-
-  const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
-
-  const notificar = (mensagem) => {
-    setNotification(mensagem)
-  
-    setTimeout(() => {
-        setNotification(null)
-    }, 5000)
-  } 
 
   const isTokenExpired = token => {
     if (!token) return true
@@ -43,7 +30,6 @@ const App = () => {
       return true
     }
   }
-
 
   // Verificar se o usuário já existe
   useEffect(() => {
@@ -57,10 +43,11 @@ const App = () => {
       if (isExpired) {
         window.localStorage.clear()
         setUser(null)
-        notificar('token expirado, entre dnv')
+        
+        dispatch(enviarNotificacao('token expirado, entre dnv', 5))
       }
     }
-  }, [])
+  }, [dispatch])
 
 
   const handleLogin = async (loginObj) => {
@@ -74,10 +61,9 @@ const App = () => {
         mensagensService.setToken(user.token)
         setUser(user)
 
-        notificar('sucesso')
-
+        dispatch(enviarNotificacao('Logado com sucesso :)', 5))
     } catch (exception) {
-      notificar('errou a senha e/ou nome')
+      dispatch(enviarNotificacao('Errou a senha e/ou nome', 5))
     }
   }
 
@@ -93,21 +79,20 @@ const App = () => {
   const logout = () => {
     window.localStorage.clear()
     setUser(null)
-
-    notificar('sucesso')
+    dispatch(enviarNotificacao('Deslogado com sucesso', 5))
   }
 
   if (user) {
     return (
     <div className='main'>
-      <Notification notification={notification} />
+      <Notification />
       <Chat user={user} logout={logout}/>
     </div>
   )
   } else {
     return(
       <div className='bemvindo'>
-          <Notification notification={notification} />
+          <Notification />
           <SignForm handleSign={handleSign} />
       </div>
     )
