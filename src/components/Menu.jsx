@@ -1,19 +1,24 @@
-import PropTypes from 'prop-types'
+import { useDispatch, useSelector } from 'react-redux'
+import { getUser, logout } from '../reducers/userReducer'
 
-const Menu = ({ logout }) => {        
+const Menu = () => {        
+    const dispatch = useDispatch()
+    const user = useSelector(getUser)
+    const adeus = () => {
+        dispatch(logout())
+    }
+
     const divClass = `container d-flex justify-content-end mb-2`
 
     return (
-        <div className={divClass}>
-            <button className='btn btn-secondary btn-sm' onClick={logout}>log out</button>
+        <div>
+            {user && 
+                <div className={divClass}>
+                    <button className='btn btn-secondary btn-sm' onClick={adeus}>log out</button>
+                </div>
+            }
         </div>
     )
-}
-
-Menu.propTypes = {
-    logout: PropTypes.func.isRequired,
-    usuario: PropTypes.string,
-    deletarTudo: PropTypes.func,
 }
 
 export default Menu

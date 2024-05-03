@@ -8,7 +8,6 @@ const Mensagem = ({ id, mensagem, autor, usuario }) => {
   const dispatch = useDispatch()
 
   const deleteMensagem = () => {  
-    console.log(id)
     dispatch(deletarMensagem(id))
   }
 
@@ -37,7 +36,6 @@ const Mensagem = ({ id, mensagem, autor, usuario }) => {
 }
 
 const Mensagens = ({ usuario }) => {
-  
   const mensagens = useSelector(getMensagens)
   
   const chatRef = useRef(null)
