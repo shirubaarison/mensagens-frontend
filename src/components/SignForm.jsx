@@ -33,7 +33,7 @@ const SignForm = () => {
                 <input type="password" value={password} className="form-control" name="Password" id="password" onChange={({ target }) => setPassword(target.value)} />
             </div>
             <div className="text-center mt-3">
-                <button type="submit" className="btn btn-primary btn-block" id="register-button">Entrar/registrar</button>
+                <button type="submit" className="btn btn-primary btn-block" id="register-button">registrar</button>
             </div>
         </form>
         </div>
