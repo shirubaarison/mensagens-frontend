@@ -17,9 +17,12 @@ const App = () => {
   const user = useSelector(getUser)
 
   useEffect(() => {
-    dispatch(inicializarMensagens())
-    dispatch(inicializarUser())
     dispatch({ type: 'socket/connect' })
+    // Isso é uma gambiarra pra esperar o WS conectar primeiro, o certo era esperar né...
+    setTimeout(() => {
+      dispatch(inicializarUser())
+      dispatch(inicializarMensagens())
+    }, 1000)
   }, [dispatch])
 
   return (

@@ -5,7 +5,7 @@ const Menu = () => {
     const dispatch = useDispatch()
     const user = useSelector(getUser)
     const adeus = () => {
-        dispatch(logout())
+        dispatch(logout(user))
     }
 
     return (

@@ -2,7 +2,7 @@ import Mensagens from './Mensagens'
 import MensagemForm from './MensagemForm'
 import Menu from './Menu'
 
-const Chat = () => {
+const Chat = () => {  
   return (
     <div className='main'>
         <div className='container'>

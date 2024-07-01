@@ -36,7 +36,6 @@ export const inicializarUser = () => {
         const usuarioJSON = window.localStorage.getItem('usuarioMensagensApp')
         if (usuarioJSON) {
             const usuario = JSON.parse(usuarioJSON)
-
             const isExpired = isTokenExpired(usuario.token)
             if(isExpired) {
                 window.localStorage.removeItem('usuarioMensagensApp')
@@ -45,16 +44,18 @@ export const inicializarUser = () => {
             } else {
                 dispatch(setUser(usuario))
                 mensagensService.setToken(usuario.token)
+                dispatch({ type: 'socket/send', payload: { novoUser: usuario.username }})
             }
         }
     }
 }
 
-export const logout = () => {
+export const logout = (user) => {
     return async dispatch => {
         window.localStorage.removeItem('usuarioMensagensApp')
         dispatch(reset())
         dispatch(enviarNotificacao('Você saiu da conta', 5))
+        dispatch({ type: 'socket/send', payload: { saiuUser: user.username }})
     }
 }
 
@@ -69,6 +70,7 @@ export const login = loginObj => {
             mensagensService.setToken(response.token)
             dispatch(setUser(response))
             dispatch(enviarNotificacao('Logado com sucesso :)', 5))
+            dispatch({ type: 'socket/send', payload: { novoUser: loginObj.username } })
         } catch (err) {
             dispatch(enviarNotificacao('Errou a senha e/ou nome', 5))
         }
