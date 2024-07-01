@@ -4,12 +4,14 @@ import { socketMiddleware } from './middleware/socketMiddleware'
 import { Socket } from './utils/Socket'
 import notificationReducer from './reducers/notificationReducer'
 import userReducer from './reducers/userReducer'
+import usersReducer from './reducers/usersReducer'
 
 const store = configureStore({
     reducer: {
         mensagens: mensagemReducer,
         notificacao: notificationReducer,
-        user: userReducer
+        user: userReducer,
+        users: usersReducer
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(socketMiddleware(new Socket())),
 })

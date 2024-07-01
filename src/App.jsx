@@ -10,6 +10,7 @@ import { Route, Routes } from 'react-router-dom'
 import { getUser, inicializarUser } from './reducers/userReducer'
 import LoginForm from './components/LoginForm'
 import BemVindo from './components/BemVindo'
+import { setUsersConnected } from './reducers/usersReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -22,6 +23,7 @@ const App = () => {
     setTimeout(() => {
       dispatch(inicializarUser())
       dispatch(inicializarMensagens())
+      dispatch(setUsersConnected())
     }, 1000)
   }, [dispatch])
 

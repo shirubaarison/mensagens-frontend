@@ -3,6 +3,7 @@ import mensagensService from '../services/mensagensService'
 import { enviarNotificacao } from './notificationReducer'
 import loginService from '../services/loginService'
 import { jwtDecode } from 'jwt-decode'
+import { addNewUser } from './usersReducer'
 
 const userSlice = createSlice({
     name: 'user',
@@ -71,6 +72,7 @@ export const login = loginObj => {
             dispatch(setUser(response))
             dispatch(enviarNotificacao('Logado com sucesso :)', 5))
             dispatch({ type: 'socket/send', payload: { novoUser: loginObj.username } })
+            dispatch(addNewUser(loginObj.username))
         } catch (err) {
             dispatch(enviarNotificacao('Errou a senha e/ou nome', 5))
         }

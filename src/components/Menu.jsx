@@ -8,7 +8,7 @@ const Menu = () => {
         dispatch(logout(user))
     }
 
-    return (
+    return (    
         <div>
             {user && 
                 <div className='container d-flex justify-content-end mb-2 mt-4'>
