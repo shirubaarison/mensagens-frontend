@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import mensagensService from '../services/mensagensService'
+import { createSelector } from 'reselect'
 
 const mensagemSlice = createSlice({
     name: 'mensagem',
@@ -41,6 +42,11 @@ export const deletarMensagem = (id) => {
     }
 }
 
-export const getMensagens = state => state.mensagens
+const getData = state => state.mensagens
+
+export const getMensagens = createSelector(
+    [getData],
+    (data) => data.filter(men => Object.prototype.hasOwnProperty.call(men, 'mensagem') )
+)
 
 export default mensagemSlice.reducer
