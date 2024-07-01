@@ -7,6 +7,7 @@ export const socketMiddleware = (socket) => (params) => (next) => (action) => {
     switch (type) {
     case 'socket/connect':
         socket.connect('ws://localhost:3002')
+        // socket.connect('ws://mensagens.onrender.com')
 
         socket.on('open', () => { console.log('conexão estabelecida com websocket')})
         socket.on('message', (data) => { 

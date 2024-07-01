@@ -86,4 +86,13 @@ button:has(#send-icon) {
     border-radius: 5px;
     padding: 10px;
     margin-bottom: 10px;
-  }
+}
+
+.parent {
+    min-height: 100vh;
+}
+
+
+.inputLogin {
+    width: 80%;
+}

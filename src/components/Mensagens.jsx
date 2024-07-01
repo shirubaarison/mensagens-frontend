@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux'
 import { deletarMensagem, getMensagens } from '../reducers/mensagemReducer'
 import { useEffect, useRef } from 'react'
+import { getUser } from '../reducers/userReducer'
 
 const Mensagem = ({ id, mensagem, autor, usuario }) => {
 
@@ -35,8 +36,9 @@ const Mensagem = ({ id, mensagem, autor, usuario }) => {
     )
 }
 
-const Mensagens = ({ usuario }) => {
+const Mensagens = () => {
   const mensagens = useSelector(getMensagens)
+  const usuario = useSelector(getUser)
   
   const endRef = useRef(null)
 

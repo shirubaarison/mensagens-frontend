@@ -21,20 +21,21 @@ const LoginForm = () => {
         navigate('/')
     }
     return (
-        <div className='container p-2'>
-        <form onSubmit={loginSubmit} className='inputLogin'>
-            <div className="form-group px-4 mt-3">
-                <label htmlFor="username">Username</label>
-                <input type="text" value={username} className="form-control" name="Username" id="username" onChange={({ target }) => setUsername(target.value)}/>
-            </div>
-            <div className="form-group px-4 mt-3">
-                <label htmlFor="username">Senha</label>
-                <input type="password" value={password} className="form-control" name="Password" id="password" onChange={({ target }) => setPassword(target.value)} />
-            </div>
-            <div className="text-center mt-3">
-                <button type="submit" className="btn btn-primary btn-block" id="login-button">Entrar</button>
-            </div>
-        </form>
+        <div className='parent container d-flex justify-content-center align-items-center h-100'>
+            <form onSubmit={loginSubmit} className='inputLogin'>
+                <h1 style={{padding: '10px', margin: '10px', textAlign: 'center'}}>Logar</h1>
+                <div className="form-group px-4 mt-3">
+                    <label htmlFor="username">Username</label>
+                    <input type="text" value={username} className="form-control" name="Username" id="username" onChange={({ target }) => setUsername(target.value)}/>
+                </div>
+                <div className="form-group px-4 mt-3">
+                    <label htmlFor="username">Senha</label>
+                    <input type="password" value={password} className="form-control" name="Password" id="password" onChange={({ target }) => setPassword(target.value)} />
+                </div>
+                <div className="text-center mt-3">
+                    <button type="submit" className="btn btn-primary btn-block" id="login-button">Entrar</button>
+                </div>
+            </form>
         </div>
     )
 }
