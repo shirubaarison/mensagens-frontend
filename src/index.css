@@ -96,3 +96,23 @@ button:has(#send-icon) {
 .inputLogin {
     width: 80%;
 }
+
+.conjunto {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.conjunto .usuariosConectados{
+    flex-grow: 0;
+    border-radius: 10px;
+    border: 1px solid rgb(0, 0, 0, 0.2);
+    padding: 20px;
+}
+
+.conjunto .principal {
+    flex-grow: 2;
+}
+
+.conjunto .barraLateral {
+    display: flex;
+}

@@ -4,17 +4,35 @@ import Menu from './Menu'
 import { useSelector } from 'react-redux'
 import { getUsers } from '../reducers/usersReducer'
 
-const Chat = () => {  
+const UsuariosConectados = () => {
   const usuariosConectados = useSelector(getUsers)
   
+  return (
+    <div className='usuariosConectados'>
+      <h4>Usuários conectados</h4>
+      <ul>
+        {usuariosConectados.map(u => <li key={u}>{u}</li>)}
+      </ul>
+    </div>
+  )
+}
+
+
+const Chat = () => {  
   return (
     <div className='main'>
         <div className='container'>
           <Menu />
-          <Mensagens />
-          <MensagemForm />
-          <h2>Usuários conectados</h2>
-          {usuariosConectados.map(u => <h1 key={u}>{u}</h1>)}
+          <div className='conjunto'>
+            <div className='principal'>
+              <Mensagens />
+              <MensagemForm />
+            </div>
+            <div className='barraLateral'>
+              <UsuariosConectados />
+            </div>
+          </div>
+          
         </div>
       </div>
     )
