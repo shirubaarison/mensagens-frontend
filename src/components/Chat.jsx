@@ -21,8 +21,8 @@ const UsuariosConectados = () => {
 const Chat = () => {  
   return (
     <div className='main'>
+        <Menu />
         <div className='container'>
-          <Menu />
           <div className='conjunto'>
             <div className='principal'>
               <Mensagens />
